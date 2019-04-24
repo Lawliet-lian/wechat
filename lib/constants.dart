@@ -8,5 +8,6 @@ class AppColors{
 }
 
 class Constants{
+	//配置yaml文件中的字体库
 	static const IconFontFamily = 'appIconFont';
 }

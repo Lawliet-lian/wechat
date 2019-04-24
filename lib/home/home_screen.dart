@@ -64,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //底部bar
     final BottomNavigationBar botNavBar = BottomNavigationBar(
       //map方法遍历集合中的元素,toList转换成新的数组
       items: _navigationIconViews
@@ -74,7 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
       //固定底部图标位置和大小
       type: BottomNavigationBarType.fixed,
       onTap: (int index){
-        print('用户切换成第$index个Tap');
+        int a = index+1;
+        print('用户切换成第$a个Tap');
       },
     );
     return Scaffold(
@@ -82,14 +84,46 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('高仿微信'),
 //        backgroundColor: Colors.black,
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: (){print('点击了搜索按钮');},
+          Container(
+            padding: EdgeInsets.only(right: 8.0),
+            //搜索按钮
+            child: IconButton(
+              icon: Icon(Icons.search),
+              onPressed: (){print('点击了搜索按钮');},
+            ),
           ),
-          IconButton(
+
+          PopupMenuButton(
+            //右上角加号按钮
             icon: Icon(Icons.add),
-            onPressed: (){print('显示下拉列表');},
+            itemBuilder: (BuildContext context){
+              return <PopupMenuItem<String>>[
+                //加号里的列表
+                PopupMenuItem(
+                  child: _buildPopupMenuItem(0xe6db, '发起群聊'),
+                  //value对应的值为模板传进来的T值，也就是说每一个item在被点击的时候，
+                  // 它的回调函数当中，就会把我们的模板参数回调回去
+                  value: 'group_chat',
+                ),
+                PopupMenuItem(
+                  child: _buildPopupMenuItem(0xe6e7, '添加朋友'),
+                  value: 'add_friend',
+                ),
+                PopupMenuItem(
+                  child: _buildPopupMenuItem(0xe650, '扫一扫'),
+                  value: 'qr_scan',
+                ),
+                PopupMenuItem(
+                  child: _buildPopupMenuItem(0xe62e, '收付款'),
+                  value: 'payment',
+                ),
+              ];
+            },
+
+            //PopupMenuButton的回调事件
+            onSelected: (String selected){print('点击的是$selected');},
           ),
+          Container(width: 24.0),
         ],
       ),
       body: Container(
@@ -98,6 +132,20 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: botNavBar,
     );
   }
+
+  _buildPopupMenuItem(int iconName, String title){
+    return Row(
+      children: <Widget>[
+        Icon(IconData(
+          iconName,
+          fontFamily: Constants.IconFontFamily,
+        )),
+        Container(width: 20.0,),
+        Text(title),
+      ],
+    );
+  }
+
 }
 
 class NavigationIconView {
