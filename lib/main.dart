@@ -9,6 +9,8 @@ void main() => runApp(
     //设置整体暗黑主题
     theme: ThemeData.dark().copyWith(
       primaryColor: Color(AppColors.AppBarColor),
+      //设置加号按钮的列表颜色
+      cardColor: Color(AppColors.AppBarColor),
     ),
     home: HomeScreen(),
   )
