@@ -9,11 +9,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  PageController _pageController;
+  List<Widget> _pages;
   List<NavigationIconView> _navigationIconViews;
+  int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    //初始化底部icon和文字
     _navigationIconViews = [
       NavigationIconView(
         title: '微信',
@@ -60,29 +64,47 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     ];
+
+    //页面控制器，初始化页面未当前选中的页面
+    _pageController = PageController(initialPage: _currentIndex);
+    _pages = [
+      Container(color: Colors.white,),
+      Container(color: Colors.blue,),
+      Container(color: Colors.yellow,),
+      Container(color: Colors.green,),
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
     //底部bar
     final BottomNavigationBar botNavBar = BottomNavigationBar(
+      //设置底部选中的颜色
+      fixedColor: Color(AppColors.TabIconActive),
       //map方法遍历集合中的元素,toList转换成新的数组
       items: _navigationIconViews
           .map((NavigationIconView view) => view.item)
           .toList(),
       //当前用户选中的
-      currentIndex: 0,
+      currentIndex: _currentIndex,
       //固定底部图标位置和大小
       type: BottomNavigationBarType.fixed,
       onTap: (int index) {
-        int a = index + 1;
-        print('用户切换成第$a个Tap');
+        print('用户切换成第$index个Tap');
+        setState(() {
+          //设置当前页为点击的tap页
+          _currentIndex = index;
+          //点击tap后，跳转到对应的page页,动画时长200毫秒，动画曲线为预定义的
+          _pageController.animateToPage(index, duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
+        });
       },
     );
     return Scaffold(
       appBar: AppBar(
         title: Text('高仿微信'),
 //        backgroundColor: Colors.black,
+        //去除AppBar的阴影效果
+        elevation: 0.0,
         actions: <Widget>[
           Container(
             padding: EdgeInsets.only(right: 8.0),
@@ -129,18 +151,35 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(width: 24.0),
         ],
       ),
-      body: Container(
-        color: Colors.red,
+      body: PageView.builder(
+        itemBuilder: (BuildContext context, int index) {
+          return _pages[index];
+        },
+        controller: _pageController,
+        itemCount: _pages.length,
+        onPageChanged: (int index){
+          print('当前打印的是第$index页');
+          setState(() {
+            //滑动页面时，将底部的tab页面换成page的页面，来完成联动
+            _currentIndex = index;
+          });
+        },
+
       ),
       bottomNavigationBar: botNavBar,
     );
   }
 
+  //提取公共方法，返回加号的每一行列表
   _buildPopupMenuItem(int iconName, String title) {
     return Row(
       children: <Widget>[
         //设置icon的大小和颜色
-        Icon(IconData(iconName, fontFamily: Constants.IconFontFamily,),
+        Icon(
+          IconData(
+            iconName,
+            fontFamily: Constants.IconFontFamily,
+          ),
           size: 22.0,
           color: Color(AppColors.AppBarPopupMenuColor),
         ),
@@ -157,36 +196,21 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class NavigationIconView {
-  final String _title;
-  final IconData _icon;
-  final IconData _activeIcon;
-
   //底部导航bar条目
   final BottomNavigationBarItem item;
 
   NavigationIconView(
       {Key key, String title, IconData icon, IconData activeIcon})
-      : _title = title,
-        _icon = icon,
-        _activeIcon = activeIcon,
-        item = BottomNavigationBarItem(
+      : item = BottomNavigationBarItem(
           //底部icon的字体
-          title: Text(
-            title,
-            style: TextStyle(
-              fontSize: 14.0,
-              color: Color(AppColors.TapIconNormal),
-            ),
-          ),
+          title: Text(title),
           //默认底部icon颜色
           icon: Icon(
             icon,
-            color: Color(AppColors.TapIconNormal),
           ),
           //激活的底部icon颜色
           activeIcon: Icon(
             activeIcon,
-            color: Color(AppColors.TaoIconActive),
           ),
           backgroundColor: Colors.white,
         );
