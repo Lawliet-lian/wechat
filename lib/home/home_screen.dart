@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_wechat/constants.dart';
+import './conversation_page.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -68,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
     //页面控制器，初始化页面未当前选中的页面
     _pageController = PageController(initialPage: _currentIndex);
     _pages = [
-      Container(color: Colors.white,),
+      ConversationPage(),
       Container(color: Colors.blue,),
       Container(color: Colors.yellow,),
       Container(color: Colors.green,),
