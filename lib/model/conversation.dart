@@ -31,6 +31,15 @@ class Conversation {
 	}
 }
 
+const Map<String,List<Conversation>> mockConversationsData = {
+	'devicesInfo' : null,
+	'Conversations' : mockConversations
+};
+
+enum Devices{
+	MAC,WIN
+}
+
 const List<Conversation> mockConversations = [
 	const Conversation(
 			avatar: 'assets/images/ic_file_transfer.png',

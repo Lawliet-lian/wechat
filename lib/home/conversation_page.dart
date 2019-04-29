@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_wechat/constants.dart';
 import 'package:flutter_wechat/model/conversation.dart';
 
+
 //微信聊天绘话条目
 class _ConversationItem extends StatelessWidget{
   const _ConversationItem({Key key, this.conversation})
@@ -141,6 +142,51 @@ class _ConversationItem extends StatelessWidget{
 
 }
 
+//电脑已登录条目
+class _DeviceInfoItem extends StatelessWidget{
+  final Devices devices;
+  const _DeviceInfoItem({Key key, this.devices: Devices.WIN}) : super(key: key);
+
+  int get iconName{
+    return devices == Devices.WIN ? 0xebb1 : 0xe60e;
+  }
+
+  String get devicesName{
+    return devices == Devices.WIN ? 'Windows' : 'Mac';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        color: Color(AppColors.DeviceInfoItemBg),
+        border: Border(
+          bottom: BorderSide(
+            width: Constants.DividerWidth,
+            color: Color(AppColors.DividerColor),
+          )
+        ),
+      ),
+
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(width: 20.0,),
+          Icon(IconData(
+            this.iconName,
+            fontFamily: Constants.IconFontFamily,
+          ),color: Color(AppColors.DeviceInfoItemIcon),size: 24.0,),
+          SizedBox(width: 20.0,),
+          Text('微信已在$devicesName端登录，手机通知关闭',style: TextStyle(color: Color(AppColors.DeviceInfoItemText)),),
+        ],
+      ),
+    );
+  }
+
+}
+
 class ConversationPage extends StatefulWidget{
   @override
   _ConversationPageState createState() {
@@ -155,8 +201,11 @@ class _ConversationPageState extends State<ConversationPage>{
     return ListView.builder(
       //设置ListView的长度为mockConversations数组的长度
       itemCount: mockConversations.length,
-      //ListView的index会回调回来
+      //ListView的index会回调回来，会回调mockConversations.length次
       itemBuilder: (BuildContext context, int index){
+        if(index == 0){
+          return _DeviceInfoItem(devices: Devices.MAC,);
+        }
         return _ConversationItem(conversation: mockConversations[index],);
       },
 
